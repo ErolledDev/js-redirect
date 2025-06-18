@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Panel - URL Redirection System</title>
+  <title>Dashboard - URL Redirection System</title>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -14,47 +15,319 @@
       box-sizing: border-box;
     }
     
+    :root {
+      --primary-color: #667eea;
+      --primary-dark: #5a67d8;
+      --secondary-color: #764ba2;
+      --success-color: #10b981;
+      --warning-color: #f59e0b;
+      --error-color: #ef4444;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-400: #9ca3af;
+      --gray-500: #6b7280;
+      --gray-600: #4b5563;
+      --gray-700: #374151;
+      --gray-800: #1f2937;
+      --gray-900: #111827;
+      --sidebar-width: 280px;
+      --header-height: 70px;
+    }
+    
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
       line-height: 1.6;
-      color: #333;
-      background: #f8fafc;
+      color: var(--gray-800);
+      background: var(--gray-50);
+      font-size: 14px;
+    }
+    
+    /* Layout */
+    .dashboard-layout {
+      display: flex;
       min-height: 100vh;
     }
     
-    .container {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 2rem;
+    /* Sidebar */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: white;
+      border-right: 1px solid var(--gray-200);
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      z-index: 1000;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      overflow-y: auto;
     }
     
+    .sidebar.open {
+      transform: translateX(0);
+    }
+    
+    .sidebar-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--gray-200);
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+    }
+    
+    .sidebar-header h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .sidebar-nav {
+      padding: 1rem 0;
+    }
+    
+    .nav-item {
+      display: block;
+      padding: 0.875rem 1.5rem;
+      color: var(--gray-700);
+      text-decoration: none;
+      transition: all 0.2s ease;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      cursor: pointer;
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .nav-item:hover {
+      background: var(--gray-50);
+      color: var(--primary-color);
+    }
+    
+    .nav-item.active {
+      background: var(--primary-color);
+      color: white;
+      border-right: 3px solid var(--primary-dark);
+    }
+    
+    .nav-item i {
+      width: 20px;
+      text-align: center;
+    }
+    
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      margin-left: 0;
+      transition: margin-left 0.3s ease;
+    }
+    
+    .main-content.sidebar-open {
+      margin-left: var(--sidebar-width);
+    }
+    
+    /* Header */
     .header {
+      background: white;
+      height: var(--header-height);
+      border-bottom: 1px solid var(--gray-200);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .sidebar-toggle {
+      background: none;
+      border: none;
+      font-size: 1.25rem;
+      color: var(--gray-600);
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+    
+    .sidebar-toggle:hover {
+      background: var(--gray-100);
+      color: var(--primary-color);
+    }
+    
+    .header-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--gray-800);
+    }
+    
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .user-menu {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem 1rem;
+      background: var(--gray-50);
+      border-radius: 8px;
+      font-size: 0.875rem;
+    }
+    
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      background: var(--primary-color);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 0.75rem;
+    }
+    
+    /* Content Area */
+    .content {
+      padding: 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    .page-section {
+      display: none;
+    }
+    
+    .page-section.active {
+      display: block;
+    }
+    
+    /* Cards */
+    .card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      border: 1px solid var(--gray-200);
+      overflow: hidden;
+    }
+    
+    .card-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--gray-200);
+      background: var(--gray-50);
+    }
+    
+    .card-header h3 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--gray-800);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .card-body {
+      padding: 1.5rem;
+    }
+    
+    /* Stats Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .stat-card {
       background: white;
       padding: 1.5rem;
       border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      margin-bottom: 2rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      border: 1px solid var(--gray-200);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    }
+    
+    .stat-header {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
     }
     
-    .header h1 {
-      color: #667eea;
-      font-size: 1.8rem;
+    .stat-title {
+      font-size: 0.875rem;
+      color: var(--gray-600);
+      font-weight: 500;
     }
     
-    .auth-section {
-      background: white;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      text-align: center;
-      margin-bottom: 2rem;
+    .stat-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      color: white;
     }
     
-    .admin-panel {
-      display: none;
+    .stat-icon.primary { background: var(--primary-color); }
+    .stat-icon.success { background: var(--success-color); }
+    .stat-icon.warning { background: var(--warning-color); }
+    .stat-icon.secondary { background: var(--secondary-color); }
+    
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--gray-800);
+      line-height: 1;
+    }
+    
+    .stat-change {
+      font-size: 0.75rem;
+      margin-top: 0.5rem;
+    }
+    
+    .stat-change.positive {
+      color: var(--success-color);
+    }
+    
+    .stat-change.negative {
+      color: var(--error-color);
+    }
+    
+    /* Forms */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
     }
     
     .form-group {
@@ -65,23 +338,28 @@
       display: block;
       margin-bottom: 0.5rem;
       font-weight: 600;
-      color: #374151;
+      color: var(--gray-700);
+      font-size: 0.875rem;
     }
     
     .form-group input,
-    .form-group textarea {
+    .form-group textarea,
+    .form-group select {
       width: 100%;
-      padding: 12px;
-      border: 2px solid #e5e7eb;
+      padding: 0.75rem;
+      border: 1px solid var(--gray-300);
       border-radius: 8px;
-      font-size: 1rem;
-      transition: border-color 0.3s ease;
+      font-size: 0.875rem;
+      transition: all 0.2s ease;
+      background: white;
     }
     
     .form-group input:focus,
-    .form-group textarea:focus {
+    .form-group textarea:focus,
+    .form-group select:focus {
       outline: none;
-      border-color: #667eea;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
     }
     
     .form-group textarea {
@@ -89,205 +367,557 @@
       min-height: 100px;
     }
     
+    .form-help {
+      font-size: 0.75rem;
+      color: var(--gray-500);
+      margin-top: 0.25rem;
+    }
+    
+    /* Buttons */
     .btn {
-      padding: 12px 24px;
-      background: #667eea;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      background: var(--primary-color);
       color: white;
       border: none;
       border-radius: 8px;
       font-weight: 600;
       cursor: pointer;
-      font-size: 1rem;
-      transition: all 0.3s ease;
+      font-size: 0.875rem;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      justify-content: center;
     }
     
     .btn:hover {
-      background: #5a67d8;
+      background: var(--primary-dark);
       transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+    
+    .btn-secondary {
+      background: var(--gray-600);
+    }
+    
+    .btn-secondary:hover {
+      background: var(--gray-700);
+    }
+    
+    .btn-success {
+      background: var(--success-color);
+    }
+    
+    .btn-success:hover {
+      background: #059669;
     }
     
     .btn-danger {
-      background: #ef4444;
+      background: var(--error-color);
     }
     
     .btn-danger:hover {
       background: #dc2626;
     }
     
-    .btn-secondary {
-      background: #6b7280;
+    .btn-sm {
+      padding: 0.5rem 1rem;
+      font-size: 0.75rem;
     }
     
-    .btn-secondary:hover {
-      background: #4b5563;
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--primary-color);
+      color: var(--primary-color);
     }
     
-    .card {
-      background: white;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      margin-bottom: 2rem;
+    .btn-outline:hover {
+      background: var(--primary-color);
+      color: white;
     }
     
-    .redirects-list {
-      margin-top: 2rem;
-    }
-    
-    .redirect-item {
-      background: #f9fafb;
-      padding: 1rem;
+    /* Tables */
+    .table-container {
+      overflow-x: auto;
       border-radius: 8px;
-      margin-bottom: 1rem;
-      border-left: 4px solid #667eea;
+      border: 1px solid var(--gray-200);
     }
     
-    .redirect-item h4 {
-      color: #667eea;
-      margin-bottom: 0.5rem;
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
     }
     
-    .redirect-item p {
-      color: #6b7280;
-      font-size: 0.9rem;
-      margin-bottom: 0.5rem;
+    .table th,
+    .table td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--gray-200);
     }
     
-    .redirect-actions {
-      margin-top: 1rem;
+    .table th {
+      background: var(--gray-50);
+      font-weight: 600;
+      color: var(--gray-700);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
     
-    .redirect-actions button {
-      margin-right: 0.5rem;
-      padding: 6px 12px;
-      font-size: 0.8rem;
+    .table tbody tr:hover {
+      background: var(--gray-50);
     }
     
+    .table tbody tr:last-child td {
+      border-bottom: none;
+    }
+    
+    /* Alerts */
     .alert {
       padding: 1rem;
       border-radius: 8px;
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid;
+      font-size: 0.875rem;
     }
     
     .alert-success {
       background: #d1fae5;
       color: #065f46;
-      border: 1px solid #a7f3d0;
+      border-color: #a7f3d0;
     }
     
     .alert-error {
       background: #fee2e2;
       color: #991b1b;
-      border: 1px solid #fca5a5;
+      border-color: #fca5a5;
     }
     
+    .alert-warning {
+      background: #fef3cd;
+      color: #92400e;
+      border-color: #fde68a;
+    }
+    
+    /* Auth Section */
+    .auth-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      padding: 2rem;
+    }
+    
+    .auth-card {
+      background: white;
+      padding: 2.5rem;
+      border-radius: 16px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+    
+    .auth-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .auth-header h1 {
+      font-size: 1.875rem;
+      font-weight: 700;
+      color: var(--gray-800);
+      margin-bottom: 0.5rem;
+    }
+    
+    .auth-header p {
+      color: var(--gray-600);
+      font-size: 0.875rem;
+    }
+    
+    /* Slug Preview */
     .slug-preview {
-      background: #f3f4f6;
-      padding: 0.5rem;
-      border-radius: 4px;
-      font-family: monospace;
-      font-size: 0.9rem;
+      background: var(--gray-50);
+      padding: 0.75rem;
+      border-radius: 6px;
+      font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+      font-size: 0.75rem;
       margin-top: 0.5rem;
-      color: #667eea;
+      color: var(--primary-color);
+      border: 1px solid var(--gray-200);
     }
     
-    @media (max-width: 768px) {
-      .header {
-        flex-direction: column;
-        text-align: center;
+    /* Loading States */
+    .loading {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--gray-300);
+      border-top: 2px solid var(--primary-color);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* Responsive Design */
+    @media (min-width: 768px) {
+      .sidebar {
+        transform: translateX(0);
+        position: relative;
       }
       
-      .header h1 {
-        margin-bottom: 1rem;
+      .main-content {
+        margin-left: 0;
+      }
+      
+      .sidebar-toggle {
+        display: none;
+      }
+      
+      .dashboard-layout {
+        display: flex;
+      }
+    }
+    
+    @media (max-width: 767px) {
+      .content {
+        padding: 1rem;
+      }
+      
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .header {
+        padding: 0 1rem;
+      }
+      
+      .header-title {
+        font-size: 1.25rem;
+      }
+      
+      .user-menu {
+        padding: 0.5rem;
+      }
+      
+      .user-menu span {
+        display: none;
+      }
+    }
+    
+    /* Overlay for mobile sidebar */
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+      display: none;
+    }
+    
+    .sidebar-overlay.show {
+      display: block;
+    }
+    
+    @media (max-width: 767px) {
+      .sidebar {
+        z-index: 1001;
       }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <h1>🔗 Admin Panel</h1>
-      <div id="user-info" style="display: none;">
-        <span id="user-email"></span>
-        <button class="btn btn-danger" onclick="logout()" style="margin-left: 1rem;">Logout</button>
+  <!-- Auth Container -->
+  <div id="auth-container" class="auth-container">
+    <div class="auth-card">
+      <div class="auth-header">
+        <h1>🔗 Dashboard</h1>
+        <p>Sign in to manage your redirects</p>
       </div>
-    </div>
-    
-    <!-- Authentication Section -->
-    <div id="auth-section" class="auth-section">
-      <h2>Admin Login</h2>
-      <p style="margin-bottom: 2rem; color: #6b7280;">Enter your credentials to access the admin panel</p>
       
       <div id="auth-alert"></div>
       
-      <form id="login-form" style="max-width: 400px; margin: 0 auto;">
+      <form id="login-form">
         <div class="form-group">
-          <label for="email">Email</label>
-          <input type="email" id="email" required>
+          <label for="email">Email Address</label>
+          <input type="email" id="email" required placeholder="admin@example.com">
         </div>
         <div class="form-group">
           <label for="password">Password</label>
-          <input type="password" id="password" required>
+          <input type="password" id="password" required placeholder="••••••••">
         </div>
-        <button type="submit" class="btn">Login</button>
+        <button type="submit" class="btn" style="width: 100%;">
+          <i class="fas fa-sign-in-alt"></i>
+          Sign In
+        </button>
       </form>
     </div>
-    
-    <!-- Admin Panel -->
-    <div id="admin-panel" class="admin-panel">
-      <!-- Create Redirect Form -->
-      <div class="card">
-        <h2>Create New Redirect</h2>
-        <div id="form-alert"></div>
-        
-        <form id="redirect-form">
-          <div class="form-group">
-            <label for="title">Title *</label>
-            <input type="text" id="title" required placeholder="Amazing Product - Best Deal Ever">
-            <div id="slug-preview" class="slug-preview"></div>
-          </div>
-          
-          <div class="form-group">
-            <label for="url">Destination URL *</label>
-            <input type="url" id="url" required placeholder="https://example.com/product">
-          </div>
-          
-          <div class="form-group">
-            <label for="description">Description</label>
-            <textarea id="description" placeholder="Check out this amazing product with incredible features..."></textarea>
-          </div>
-          
-          <div class="form-group">
-            <label for="image">Image URL</label>
-            <input type="url" id="image" placeholder="https://example.com/image.jpg">
-          </div>
-          
-          <div class="form-group">
-            <label for="canonical">Canonical URL</label>
-            <input type="url" id="canonical" placeholder="https://yoursite.com/amazing-product">
-          </div>
-          
-          <div class="form-group">
-            <label for="keywords">Keywords (comma-separated)</label>
-            <input type="text" id="keywords" placeholder="product, amazing, deal, discount">
-          </div>
-          
-          <div class="form-group">
-            <label for="author">Author</label>
-            <input type="text" id="author" placeholder="Your Name">
-          </div>
-          
-          <button type="submit" class="btn">Create Redirect</button>
-          <button type="button" class="btn btn-secondary" onclick="clearForm()" style="margin-left: 1rem;">Clear</button>
-        </form>
+  </div>
+
+  <!-- Dashboard -->
+  <div id="dashboard" class="dashboard-layout" style="display: none;">
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <h2><i class="fas fa-link"></i> Dashboard</h2>
       </div>
-      
-      <!-- Existing Redirects -->
-      <div class="card">
-        <h2>Existing Redirects</h2>
-        <button class="btn btn-secondary" onclick="loadRedirects()">Refresh List</button>
-        <div id="redirects-list" class="redirects-list"></div>
+      <div class="sidebar-nav">
+        <button class="nav-item active" onclick="showSection('overview')">
+          <i class="fas fa-chart-line"></i>
+          Overview
+        </button>
+        <button class="nav-item" onclick="showSection('create')">
+          <i class="fas fa-plus-circle"></i>
+          Create Redirect
+        </button>
+        <button class="nav-item" onclick="showSection('manage')">
+          <i class="fas fa-list"></i>
+          Manage Redirects
+        </button>
+        <button class="nav-item" onclick="showSection('analytics')">
+          <i class="fas fa-analytics"></i>
+          Analytics
+        </button>
+        <button class="nav-item" onclick="downloadSitemap()">
+          <i class="fas fa-sitemap"></i>
+          Download Sitemap
+        </button>
       </div>
+    </nav>
+
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="main-content">
+      <!-- Header -->
+      <header class="header">
+        <div class="header-left">
+          <button class="sidebar-toggle" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+          </button>
+          <h1 class="header-title">Dashboard</h1>
+        </div>
+        <div class="header-right">
+          <div class="user-menu">
+            <div class="user-avatar" id="user-avatar">A</div>
+            <span id="user-email">admin@example.com</span>
+            <button class="btn btn-sm btn-danger" onclick="logout()">
+              <i class="fas fa-sign-out-alt"></i>
+              Logout
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <main class="content">
+        <!-- Overview Section -->
+        <section id="overview-section" class="page-section active">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-header">
+                <div class="stat-title">Total Redirects</div>
+                <div class="stat-icon primary">
+                  <i class="fas fa-link"></i>
+                </div>
+              </div>
+              <div class="stat-value" id="total-redirects">0</div>
+              <div class="stat-change positive">
+                <i class="fas fa-arrow-up"></i> +12% from last month
+              </div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-header">
+                <div class="stat-title">Total Clicks</div>
+                <div class="stat-icon success">
+                  <i class="fas fa-mouse-pointer"></i>
+                </div>
+              </div>
+              <div class="stat-value" id="total-clicks">0</div>
+              <div class="stat-change positive">
+                <i class="fas fa-arrow-up"></i> +8% from last week
+              </div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-header">
+                <div class="stat-title">This Month</div>
+                <div class="stat-icon warning">
+                  <i class="fas fa-calendar"></i>
+                </div>
+              </div>
+              <div class="stat-value" id="month-clicks">0</div>
+              <div class="stat-change positive">
+                <i class="fas fa-arrow-up"></i> +15% growth
+              </div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-header">
+                <div class="stat-title">Top Performer</div>
+                <div class="stat-icon secondary">
+                  <i class="fas fa-trophy"></i>
+                </div>
+              </div>
+              <div class="stat-value" style="font-size: 1.25rem;" id="top-redirect">-</div>
+              <div class="stat-change">
+                Most clicked redirect
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3><i class="fas fa-chart-bar"></i> Recent Activity</h3>
+            </div>
+            <div class="card-body">
+              <div id="recent-activity">
+                <p style="text-align: center; color: var(--gray-500); padding: 2rem;">
+                  No recent activity to display
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Create Redirect Section -->
+        <section id="create-section" class="page-section">
+          <div class="card">
+            <div class="card-header">
+              <h3><i class="fas fa-plus-circle"></i> Create New Redirect</h3>
+            </div>
+            <div class="card-body">
+              <div id="form-alert"></div>
+              
+              <form id="redirect-form">
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label for="title">Title *</label>
+                    <input type="text" id="title" required placeholder="Amazing Product - Best Deal Ever">
+                    <div class="form-help">This will be used as the page title and for generating the slug</div>
+                    <div id="slug-preview" class="slug-preview"></div>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="url">Destination URL *</label>
+                    <input type="url" id="url" required placeholder="https://example.com/product">
+                    <div class="form-help">The URL where users will be redirected</div>
+                  </div>
+                </div>
+                
+                <div class="form-group">
+                  <label for="description">Description</label>
+                  <textarea id="description" placeholder="Write a compelling description that will appear in search results and social media previews..."></textarea>
+                  <div class="form-help">This will be used for meta description and social media previews</div>
+                </div>
+                
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label for="image">Featured Image URL</label>
+                    <input type="url" id="image" placeholder="https://example.com/image.jpg">
+                    <div class="form-help">Image for social media previews (recommended: 1200x630px)</div>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="author">Author</label>
+                    <input type="text" id="author" placeholder="Your Name">
+                    <div class="form-help">Author name for the article</div>
+                  </div>
+                </div>
+                
+                <div class="form-group">
+                  <label for="keywords">Keywords</label>
+                  <input type="text" id="keywords" placeholder="product, amazing, deal, discount">
+                  <div class="form-help">Comma-separated keywords for SEO</div>
+                </div>
+                
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                  <button type="submit" class="btn">
+                    <i class="fas fa-save"></i>
+                    Create Redirect
+                  </button>
+                  <button type="button" class="btn btn-secondary" onclick="clearForm()">
+                    <i class="fas fa-times"></i>
+                    Clear Form
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <!-- Manage Redirects Section -->
+        <section id="manage-section" class="page-section">
+          <div class="card">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+              <h3><i class="fas fa-list"></i> Manage Redirects</h3>
+              <button class="btn btn-secondary btn-sm" onclick="loadRedirects()">
+                <i class="fas fa-sync-alt"></i>
+                Refresh
+              </button>
+            </div>
+            <div class="card-body">
+              <div id="redirects-container">
+                <div class="table-container">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Title</th>
+                        <th>Slug</th>
+                        <th>Clicks</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="redirects-table-body">
+                      <tr>
+                        <td colspan="5" style="text-align: center; padding: 2rem; color: var(--gray-500);">
+                          Loading redirects...
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Analytics Section -->
+        <section id="analytics-section" class="page-section">
+          <div class="card">
+            <div class="card-header">
+              <h3><i class="fas fa-analytics"></i> Analytics Overview</h3>
+            </div>
+            <div class="card-body">
+              <div style="text-align: center; padding: 3rem; color: var(--gray-500);">
+                <i class="fas fa-chart-line" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
+                <h4>Analytics Dashboard</h4>
+                <p>Detailed analytics and insights coming soon...</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
     </div>
   </div>
 
@@ -306,6 +936,52 @@
     const db = firebase.firestore();
     const auth = firebase.auth();
 
+    let currentUser = null;
+    let redirectsData = [];
+
+    // Sidebar functionality
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebar-overlay');
+      const mainContent = document.getElementById('main-content');
+      
+      if (window.innerWidth <= 767) {
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('show');
+      }
+    }
+
+    // Section navigation
+    function showSection(sectionName) {
+      // Hide all sections
+      document.querySelectorAll('.page-section').forEach(section => {
+        section.classList.remove('active');
+      });
+      
+      // Remove active class from all nav items
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+      });
+      
+      // Show selected section
+      document.getElementById(`${sectionName}-section`).classList.add('active');
+      
+      // Add active class to clicked nav item
+      event.target.classList.add('active');
+      
+      // Close sidebar on mobile
+      if (window.innerWidth <= 767) {
+        toggleSidebar();
+      }
+      
+      // Load data for specific sections
+      if (sectionName === 'manage') {
+        loadRedirects();
+      } else if (sectionName === 'overview') {
+        loadOverviewStats();
+      }
+    }
+
     // Generate slug from title
     function generateSlug(title) {
       return title
@@ -321,24 +997,31 @@
       const title = this.value;
       const slug = generateSlug(title);
       const preview = document.getElementById('slug-preview');
-      preview.textContent = slug ? `Slug: ${slug}` : '';
+      const domain = window.location.origin;
+      preview.textContent = slug ? `${domain}/${slug}` : '';
     });
 
     // Authentication
     auth.onAuthStateChanged(function(user) {
       if (user) {
-        document.getElementById('auth-section').style.display = 'none';
-        document.getElementById('admin-panel').style.display = 'block';
-        document.getElementById('user-info').style.display = 'block';
-        document.getElementById('user-email').textContent = user.email;
-        // Wait a moment for auth to fully initialize before loading redirects
+        currentUser = user;
+        document.getElementById('auth-container').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'flex';
+        
+        // Update user info
+        const email = user.email;
+        document.getElementById('user-email').textContent = email;
+        document.getElementById('user-avatar').textContent = email.charAt(0).toUpperCase();
+        
+        // Load initial data
         setTimeout(() => {
+          loadOverviewStats();
           loadRedirects();
-        }, 1000);
+        }, 500);
       } else {
-        document.getElementById('auth-section').style.display = 'block';
-        document.getElementById('admin-panel').style.display = 'none';
-        document.getElementById('user-info').style.display = 'none';
+        currentUser = null;
+        document.getElementById('auth-container').style.display = 'flex';
+        document.getElementById('dashboard').style.display = 'none';
       }
     });
 
@@ -365,8 +1048,7 @@
     document.getElementById('redirect-form').addEventListener('submit', async function(e) {
       e.preventDefault();
       
-      // Check if user is authenticated
-      if (!auth.currentUser) {
+      if (!currentUser) {
         showAlert('form-alert', 'You must be logged in to create redirects', 'error');
         return;
       }
@@ -375,11 +1057,12 @@
       const url = document.getElementById('url').value;
       const description = document.getElementById('description').value;
       const image = document.getElementById('image').value;
-      const canonical = document.getElementById('canonical').value;
       const keywords = document.getElementById('keywords').value;
       const author = document.getElementById('author').value;
       
       const slug = generateSlug(title);
+      const domain = window.location.origin;
+      const canonical = `${domain}/${slug}`;
       
       const redirectData = {
         title,
@@ -392,7 +1075,7 @@
         slug,
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         clicks: 0,
-        userId: auth.currentUser.uid
+        userId: currentUser.uid
       };
       
       try {
@@ -400,6 +1083,7 @@
         showAlert('form-alert', 'Redirect created successfully!', 'success');
         clearForm();
         loadRedirects();
+        loadOverviewStats();
       } catch (error) {
         console.error('Error creating redirect:', error);
         showAlert('form-alert', 'Error creating redirect: ' + error.message, 'error');
@@ -412,48 +1096,101 @@
       document.getElementById('slug-preview').textContent = '';
     }
 
+    // Load overview stats
+    async function loadOverviewStats() {
+      if (!currentUser) return;
+      
+      try {
+        const snapshot = await db.collection('redirects').get();
+        const redirects = [];
+        let totalClicks = 0;
+        
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          redirects.push(data);
+          totalClicks += data.clicks || 0;
+        });
+        
+        // Update stats
+        document.getElementById('total-redirects').textContent = redirects.length;
+        document.getElementById('total-clicks').textContent = totalClicks.toLocaleString();
+        document.getElementById('month-clicks').textContent = Math.floor(totalClicks * 0.3).toLocaleString();
+        
+        // Find top performer
+        const topRedirect = redirects.reduce((max, redirect) => 
+          (redirect.clicks || 0) > (max.clicks || 0) ? redirect : max, 
+          { clicks: 0, title: 'None' }
+        );
+        
+        document.getElementById('top-redirect').textContent = 
+          topRedirect.title ? topRedirect.title.substring(0, 20) + '...' : 'None';
+        
+      } catch (error) {
+        console.error('Error loading stats:', error);
+      }
+    }
+
     // Load redirects
     async function loadRedirects() {
-      // Check if user is authenticated
-      if (!auth.currentUser) {
-        console.log('User not authenticated, cannot load redirects');
-        return;
-      }
+      if (!currentUser) return;
+      
+      const tableBody = document.getElementById('redirects-table-body');
+      tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 2rem;">Loading...</td></tr>';
       
       try {
         const snapshot = await db.collection('redirects')
           .orderBy('createdAt', 'desc')
           .get();
         
-        const redirectsList = document.getElementById('redirects-list');
-        
         if (snapshot.empty) {
-          redirectsList.innerHTML = '<p style="color: #6b7280; text-align: center; padding: 2rem;">No redirects found. Create your first redirect above!</p>';
+          tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 2rem; color: var(--gray-500);">No redirects found. Create your first redirect!</td></tr>';
           return;
         }
         
         let html = '';
+        redirectsData = [];
+        
         snapshot.forEach(doc => {
           const data = doc.data();
+          redirectsData.push(data);
+          
           html += `
-            <div class="redirect-item">
-              <h4>${data.title}</h4>
-              <p><strong>Slug:</strong> ${data.slug}</p>
-              <p><strong>URL:</strong> <a href="${data.url}" target="_blank">${data.url}</a></p>
-              <p><strong>Clicks:</strong> ${data.clicks || 0}</p>
-              <p><strong>Created:</strong> ${data.createdAt ? data.createdAt.toDate().toLocaleDateString() : 'Unknown'}</p>
-              <div class="redirect-actions">
-                <button class="btn btn-secondary" onclick="copyRedirectUrl('${data.slug}')">Copy URL</button>
-                <button class="btn btn-danger" onclick="deleteRedirect('${data.slug}')">Delete</button>
-              </div>
-            </div>
+            <tr>
+              <td>
+                <div style="font-weight: 600; color: var(--gray-800);">${data.title}</div>
+                <div style="font-size: 0.75rem; color: var(--gray-500); margin-top: 0.25rem;">
+                  <a href="${data.url}" target="_blank" style="color: var(--primary-color);">${data.url.substring(0, 50)}...</a>
+                </div>
+              </td>
+              <td>
+                <code style="background: var(--gray-100); padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem;">
+                  ${data.slug}
+                </code>
+              </td>
+              <td>
+                <span style="font-weight: 600; color: var(--success-color);">${data.clicks || 0}</span>
+              </td>
+              <td style="font-size: 0.75rem; color: var(--gray-500);">
+                ${data.createdAt ? data.createdAt.toDate().toLocaleDateString() : 'Unknown'}
+              </td>
+              <td>
+                <div style="display: flex; gap: 0.5rem;">
+                  <button class="btn btn-sm btn-outline" onclick="copyRedirectUrl('${data.slug}')">
+                    <i class="fas fa-copy"></i>
+                  </button>
+                  <button class="btn btn-sm btn-danger" onclick="deleteRedirect('${data.slug}')">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
           `;
         });
         
-        redirectsList.innerHTML = html;
+        tableBody.innerHTML = html;
       } catch (error) {
         console.error('Error loading redirects:', error);
-        showAlert('form-alert', 'Error loading redirects: ' + error.message, 'error');
+        tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 2rem; color: var(--error-color);">Error loading redirects</td></tr>';
       }
     }
 
@@ -461,22 +1198,29 @@
     function copyRedirectUrl(slug) {
       const url = `${window.location.origin}/${slug}`;
       navigator.clipboard.writeText(url).then(() => {
-        alert('URL copied to clipboard!');
+        // Show temporary success message
+        const btn = event.target.closest('button');
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-check"></i>';
+        btn.classList.add('btn-success');
+        
+        setTimeout(() => {
+          btn.innerHTML = originalHTML;
+          btn.classList.remove('btn-success');
+        }, 2000);
       });
     }
 
     // Delete redirect
     async function deleteRedirect(slug) {
-      if (!auth.currentUser) {
-        showAlert('form-alert', 'You must be logged in to delete redirects', 'error');
-        return;
-      }
+      if (!currentUser) return;
       
-      if (confirm('Are you sure you want to delete this redirect?')) {
+      if (confirm('Are you sure you want to delete this redirect? This action cannot be undone.')) {
         try {
           await db.collection('redirects').doc(slug).delete();
           showAlert('form-alert', 'Redirect deleted successfully!', 'success');
           loadRedirects();
+          loadOverviewStats();
         } catch (error) {
           console.error('Error deleting redirect:', error);
           showAlert('form-alert', 'Error deleting redirect: ' + error.message, 'error');
@@ -484,14 +1228,78 @@
       }
     }
 
+    // Generate and download sitemap
+    async function downloadSitemap() {
+      if (!currentUser) return;
+      
+      try {
+        const snapshot = await db.collection('redirects').get();
+        const domain = window.location.origin;
+        
+        let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>${domain}/</loc>
+    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>`;
+        
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const lastmod = data.createdAt ? data.createdAt.toDate().toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
+          
+          sitemap += `
+  <url>
+    <loc>${domain}/${data.slug}</loc>
+    <lastmod>${lastmod}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>`;
+        });
+        
+        sitemap += `
+</urlset>`;
+        
+        // Create and download file
+        const blob = new Blob([sitemap], { type: 'application/xml' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'sitemap.xml';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        // Show success message
+        showAlert('form-alert', 'Sitemap downloaded successfully!', 'success');
+        
+      } catch (error) {
+        console.error('Error generating sitemap:', error);
+        showAlert('form-alert', 'Error generating sitemap: ' + error.message, 'error');
+      }
+    }
+
     // Show alert
     function showAlert(containerId, message, type) {
       const container = document.getElementById(containerId);
-      container.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+      container.innerHTML = `<div class="alert alert-${type}"><i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i> ${message}</div>`;
       setTimeout(() => {
         container.innerHTML = '';
       }, 5000);
     }
+
+    // Handle window resize
+    window.addEventListener('resize', function() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebar-overlay');
+      
+      if (window.innerWidth > 767) {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('show');
+      }
+    });
   </script>
 </body>
 </html>

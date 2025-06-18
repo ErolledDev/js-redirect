@@ -12,14 +12,74 @@
   <meta property="og:image" content="" id="og-image">
   <meta property="og:url" content="" id="og-url">
   <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Article Hub">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="" id="twitter-title">
   <meta name="twitter:description" content="" id="twitter-description">
   <meta name="twitter:image" content="" id="twitter-image">
+  <meta name="twitter:site" content="@articlehub">
   <link rel="canonical" href="" id="canonical-link">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  
+  <!-- Structured Data -->
+  <script type="application/ld+json" id="structured-data">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "",
+    "description": "",
+    "author": {
+      "@type": "Person",
+      "name": ""
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Article Hub",
+      "logo": {
+        "@type": "ImageObject",
+        "url": ""
+      }
+    },
+    "datePublished": "",
+    "dateModified": "",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": ""
+    }
+  }
+  </script>
+  
   <style>
+    :root {
+      --primary-color: #2563eb;
+      --primary-dark: #1d4ed8;
+      --secondary-color: #64748b;
+      --accent-color: #f59e0b;
+      --success-color: #10b981;
+      --error-color: #ef4444;
+      --gray-50: #f8fafc;
+      --gray-100: #f1f5f9;
+      --gray-200: #e2e8f0;
+      --gray-300: #cbd5e1;
+      --gray-400: #94a3b8;
+      --gray-500: #64748b;
+      --gray-600: #475569;
+      --gray-700: #334155;
+      --gray-800: #1e293b;
+      --gray-900: #0f172a;
+      --max-width: 800px;
+      --border-radius: 12px;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+    
     * {
       margin: 0;
       padding: 0;
@@ -27,108 +87,328 @@
     }
     
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      line-height: 1.6;
-      color: #333;
-      background: #f8fafc;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.7;
+      color: var(--gray-800);
+      background: var(--gray-50);
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
     
-    .header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 2rem 0;
-      text-align: center;
+    /* Header */
+    .site-header {
+      background: white;
+      border-bottom: 1px solid var(--gray-200);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.95);
     }
     
-    .container {
-      max-width: 800px;
+    .header-container {
+      max-width: var(--max-width);
       margin: 0 auto;
-      padding: 0 2rem;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
     
+    .site-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--gray-800);
+      font-weight: 700;
+      font-size: 1.25rem;
+    }
+    
+    .site-logo:hover {
+      color: var(--primary-color);
+    }
+    
+    .header-nav {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+    
+    .nav-link {
+      color: var(--gray-600);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.875rem;
+      transition: color 0.2s ease;
+    }
+    
+    .nav-link:hover {
+      color: var(--primary-color);
+    }
+    
+    /* Main Content */
+    .main-container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    /* Article */
     .article {
       background: white;
-      margin: -3rem auto 2rem;
-      border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-lg);
       overflow: hidden;
+      margin-bottom: 3rem;
+    }
+    
+    .article-hero {
       position: relative;
+      height: 400px;
+      overflow: hidden;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
     }
     
     .article-image {
       width: 100%;
-      height: 300px;
+      height: 100%;
       object-fit: cover;
-      display: block;
+      transition: transform 0.3s ease;
     }
     
+    .article-image:hover {
+      transform: scale(1.02);
+    }
+    
+    .article-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+      padding: 3rem 2rem 2rem;
+      color: white;
+    }
+    
+    .article-category {
+      display: inline-block;
+      background: var(--accent-color);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 1rem;
+    }
+    
+    .article-title-hero {
+      font-size: 2.5rem;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    
+    .article-meta-hero {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      font-size: 0.875rem;
+      opacity: 0.9;
+    }
+    
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .author-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--primary-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 0.75rem;
+    }
+    
+    /* Article Content */
     .article-content {
+      padding: 3rem;
+    }
+    
+    .article-intro {
+      font-size: 1.25rem;
+      color: var(--gray-600);
+      line-height: 1.8;
+      margin-bottom: 2rem;
+      font-weight: 400;
+    }
+    
+    .article-body {
+      font-size: 1.125rem;
+      line-height: 1.8;
+      color: var(--gray-700);
+      margin-bottom: 3rem;
+    }
+    
+    .article-body p {
+      margin-bottom: 1.5rem;
+    }
+    
+    .article-body p:last-child {
+      margin-bottom: 0;
+    }
+    
+    /* Call to Action */
+    .article-cta {
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+      padding: 2.5rem;
+      border-radius: var(--border-radius);
+      text-align: center;
+      color: white;
+      margin: 3rem 0;
+    }
+    
+    .cta-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    
+    .cta-description {
+      font-size: 1.125rem;
+      opacity: 0.9;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+    
+    .cta-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: white;
+      color: var(--primary-color);
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1.125rem;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .cta-button:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-xl);
+      color: var(--primary-dark);
+    }
+    
+    .cta-button i {
+      font-size: 1.25rem;
+    }
+    
+    /* Article Footer */
+    .article-footer {
+      border-top: 1px solid var(--gray-200);
+      padding: 2rem 3rem;
+      background: var(--gray-50);
+    }
+    
+    .article-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+    }
+    
+    .tag {
+      background: var(--gray-200);
+      color: var(--gray-700);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    
+    .tag:hover {
+      background: var(--primary-color);
+      color: white;
+    }
+    
+    .share-section {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    
+    .share-title {
+      font-weight: 600;
+      color: var(--gray-700);
+    }
+    
+    .share-buttons {
+      display: flex;
+      gap: 0.75rem;
+    }
+    
+    .share-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      color: white;
+      transition: all 0.2s ease;
+      font-size: 1rem;
+    }
+    
+    .share-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .share-btn.twitter { background: #1da1f2; }
+    .share-btn.facebook { background: #4267b2; }
+    .share-btn.linkedin { background: #0077b5; }
+    .share-btn.whatsapp { background: #25d366; }
+    
+    /* Loading States */
+    .loading-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--gray-50);
+    }
+    
+    .loading-content {
+      text-align: center;
+      max-width: 400px;
       padding: 2rem;
     }
     
-    .article-meta {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-      font-size: 0.9rem;
-      color: #6b7280;
-    }
-    
-    .article-meta .author {
-      font-weight: 600;
-      color: #667eea;
-    }
-    
-    .article-meta .date {
-      color: #9ca3af;
-    }
-    
-    .article-title {
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: #1f2937;
-      margin-bottom: 1rem;
-      line-height: 1.2;
-    }
-    
-    .article-description {
-      font-size: 1.1rem;
-      color: #4b5563;
-      margin-bottom: 2rem;
-      line-height: 1.7;
-    }
-    
-    .continue-reading {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 1rem 2rem;
-      border: none;
-      border-radius: 8px;
-      font-size: 1.1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      text-decoration: none;
-      display: inline-block;
-      margin-bottom: 1rem;
-    }
-    
-    .continue-reading:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
-    }
-    
-    .loading-state {
-      text-align: center;
-      padding: 4rem 2rem;
-    }
-    
-    .spinner {
-      width: 50px;
-      height: 50px;
-      border: 4px solid #e5e7eb;
-      border-top: 4px solid #667eea;
+    .loading-spinner {
+      width: 60px;
+      height: 60px;
+      border: 4px solid var(--gray-200);
+      border-top: 4px solid var(--primary-color);
       border-radius: 50%;
       animation: spin 1s linear infinite;
       margin: 0 auto 2rem;
@@ -139,61 +419,114 @@
       100% { transform: rotate(360deg); }
     }
     
-    .error-state {
-      text-align: center;
-      padding: 4rem 2rem;
-      color: #ef4444;
+    .loading-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--gray-800);
+      margin-bottom: 0.5rem;
     }
     
-    .error-state h2 {
-      margin-bottom: 1rem;
-      font-size: 2rem;
-    }
-    
-    .error-state p {
-      margin-bottom: 2rem;
-      color: #6b7280;
-    }
-    
-    .btn {
-      display: inline-block;
-      padding: 12px 24px;
-      background: #667eea;
-      color: white;
-      text-decoration: none;
-      border-radius: 8px;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      border: none;
-      cursor: pointer;
+    .loading-description {
+      color: var(--gray-600);
       font-size: 1rem;
     }
     
+    /* Error States */
+    .error-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--gray-50);
+      padding: 2rem;
+    }
+    
+    .error-content {
+      text-align: center;
+      max-width: 500px;
+      background: white;
+      padding: 3rem;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .error-icon {
+      font-size: 4rem;
+      color: var(--error-color);
+      margin-bottom: 1.5rem;
+    }
+    
+    .error-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--gray-800);
+      margin-bottom: 1rem;
+    }
+    
+    .error-description {
+      color: var(--gray-600);
+      font-size: 1.125rem;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+    
+    .error-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      font-size: 0.875rem;
+    }
+    
     .btn:hover {
-      background: #5a67d8;
+      background: var(--primary-dark);
       transform: translateY(-1px);
     }
     
     .btn-secondary {
-      background: #6b7280;
+      background: var(--gray-600);
     }
     
     .btn-secondary:hover {
-      background: #4b5563;
+      background: var(--gray-700);
     }
     
+    /* Permissions Error */
     .permissions-error {
-      background: #fef3cd;
-      border: 1px solid #fde68a;
-      border-radius: 8px;
-      padding: 2rem;
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-lg);
+      padding: 3rem;
       margin: 2rem;
-      color: #92400e;
+      border-left: 4px solid var(--accent-color);
+    }
+    
+    .permissions-error h2 {
+      color: var(--accent-color);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
     }
     
     .permissions-error h3 {
-      color: #d97706;
-      margin-bottom: 1rem;
+      color: var(--gray-800);
+      margin: 1.5rem 0 1rem;
     }
     
     .permissions-error ul {
@@ -203,127 +536,302 @@
     
     .permissions-error li {
       margin-bottom: 0.5rem;
+      color: var(--gray-700);
     }
     
-    .debug-info {
-      background: #f3f4f6;
+    .code-block {
+      background: var(--gray-900);
+      color: var(--gray-100);
+      padding: 1.5rem;
       border-radius: 8px;
-      padding: 1rem;
-      margin-top: 1rem;
-      font-family: monospace;
-      font-size: 0.8rem;
-      color: #374151;
+      margin: 1rem 0;
+      font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+      font-size: 0.875rem;
+      line-height: 1.6;
+      overflow-x: auto;
     }
     
-    .footer {
-      text-align: center;
-      padding: 2rem;
-      color: #6b7280;
-      font-size: 0.9rem;
-    }
-    
+    /* Responsive Design */
     @media (max-width: 768px) {
-      .article-title {
-        font-size: 2rem;
+      .header-container {
+        padding: 1rem;
+        flex-direction: column;
+        gap: 1rem;
       }
       
-      .container {
-        padding: 0 1rem;
+      .header-nav {
+        gap: 1rem;
+      }
+      
+      .main-container {
+        padding: 1rem;
+      }
+      
+      .article-hero {
+        height: 250px;
+      }
+      
+      .article-overlay {
+        padding: 2rem 1.5rem 1.5rem;
+      }
+      
+      .article-title-hero {
+        font-size: 1.75rem;
+      }
+      
+      .article-meta-hero {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
       }
       
       .article-content {
+        padding: 2rem 1.5rem;
+      }
+      
+      .article-intro {
+        font-size: 1.125rem;
+      }
+      
+      .article-body {
+        font-size: 1rem;
+      }
+      
+      .article-cta {
+        padding: 2rem 1.5rem;
+      }
+      
+      .cta-title {
+        font-size: 1.25rem;
+      }
+      
+      .cta-description {
+        font-size: 1rem;
+      }
+      
+      .article-footer {
         padding: 1.5rem;
+      }
+      
+      .share-section {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .error-content {
+        padding: 2rem 1.5rem;
+      }
+      
+      .error-title {
+        font-size: 1.5rem;
+      }
+      
+      .error-actions {
+        flex-direction: column;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .article-title-hero {
+        font-size: 1.5rem;
+      }
+      
+      .article-content {
+        padding: 1.5rem 1rem;
+      }
+      
+      .article-cta {
+        padding: 1.5rem 1rem;
+      }
+      
+      .cta-button {
+        padding: 0.875rem 1.5rem;
+        font-size: 1rem;
+      }
+    }
+    
+    /* Print Styles */
+    @media print {
+      .site-header,
+      .article-cta,
+      .share-section {
+        display: none;
+      }
+      
+      .article {
+        box-shadow: none;
+        border: 1px solid var(--gray-300);
+      }
+      
+      .article-hero {
+        height: 200px;
+      }
+      
+      body {
+        background: white;
       }
     }
   </style>
 </head>
 <body>
   <!-- Loading State -->
-  <div id="loading-state" class="loading-state">
-    <div class="spinner"></div>
-    <h2>Loading Article...</h2>
-    <p>Please wait while we prepare your content.</p>
+  <div id="loading-state" class="loading-container">
+    <div class="loading-content">
+      <div class="loading-spinner"></div>
+      <h2 class="loading-title">Loading Article</h2>
+      <p class="loading-description">Please wait while we prepare your content...</p>
+    </div>
   </div>
   
   <!-- Article Content -->
   <div id="article-content" style="display: none;">
-    <div class="header">
-      <div class="container">
-        <h1 id="site-title">📚 Article Hub</h1>
-        <p>Discover amazing content and resources</p>
+    <!-- Header -->
+    <header class="site-header">
+      <div class="header-container">
+        <a href="/" class="site-logo">
+          <i class="fas fa-newspaper"></i>
+          Article Hub
+        </a>
+        <nav class="header-nav">
+          <a href="/" class="nav-link">Home</a>
+          <a href="/admin.html" class="nav-link">Admin</a>
+        </nav>
       </div>
-    </div>
-    
-    <div class="container">
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-container">
       <article class="article">
-        <img id="article-image" class="article-image" style="display: none;" alt="">
-        
-        <div class="article-content">
-          <div class="article-meta">
-            <span class="author" id="article-author">Author</span>
-            <span class="date" id="article-date">Today</span>
+        <!-- Hero Section -->
+        <div class="article-hero">
+          <img id="article-image" class="article-image" style="display: none;" alt="">
+          <div class="article-overlay">
+            <span class="article-category">Featured Article</span>
+            <h1 class="article-title-hero" id="article-title-hero">Article Title</h1>
+            <div class="article-meta-hero">
+              <div class="meta-item">
+                <div class="author-avatar" id="author-avatar">A</div>
+                <span>By <strong id="article-author-hero">Author</strong></span>
+              </div>
+              <div class="meta-item">
+                <i class="fas fa-calendar-alt"></i>
+                <span id="article-date-hero">Today</span>
+              </div>
+              <div class="meta-item">
+                <i class="fas fa-clock"></i>
+                <span>5 min read</span>
+              </div>
+            </div>
           </div>
-          
-          <h1 class="article-title" id="article-title">Article Title</h1>
-          
-          <div class="article-description" id="article-description">
-            Article description will appear here...
-          </div>
-          
-          <a href="#" id="continue-reading-btn" class="continue-reading" onclick="handleContinueReading(event)">
-            Continue Reading →
-          </a>
-          
-          <p style="font-size: 0.9rem; color: #6b7280; margin-top: 1rem;">
-            Click the button above to continue reading the full article on the original source.
-          </p>
         </div>
+
+        <!-- Article Content -->
+        <div class="article-content">
+          <div class="article-intro" id="article-intro">
+            This is the article introduction that provides a compelling overview of what readers can expect...
+          </div>
+          
+          <div class="article-body" id="article-body">
+            <p>The full article content would appear here with detailed information, insights, and valuable content for readers.</p>
+            <p>This preview gives you a taste of what's available in the complete article. Click the button below to continue reading and discover all the valuable insights and information.</p>
+          </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="article-cta">
+          <h3 class="cta-title">Continue Reading</h3>
+          <p class="cta-description">Get the full story and discover all the details in the complete article.</p>
+          <a href="#" id="continue-reading-btn" class="cta-button" onclick="handleContinueReading(event)">
+            <i class="fas fa-external-link-alt"></i>
+            Read Full Article
+          </a>
+        </div>
+
+        <!-- Article Footer -->
+        <footer class="article-footer">
+          <div class="article-tags" id="article-tags">
+            <!-- Tags will be populated here -->
+          </div>
+          
+          <div class="share-section">
+            <span class="share-title">Share this article:</span>
+            <div class="share-buttons">
+              <a href="#" class="share-btn twitter" onclick="shareOnTwitter()" title="Share on Twitter">
+                <i class="fab fa-twitter"></i>
+              </a>
+              <a href="#" class="share-btn facebook" onclick="shareOnFacebook()" title="Share on Facebook">
+                <i class="fab fa-facebook-f"></i>
+              </a>
+              <a href="#" class="share-btn linkedin" onclick="shareOnLinkedIn()" title="Share on LinkedIn">
+                <i class="fab fa-linkedin-in"></i>
+              </a>
+              <a href="#" class="share-btn whatsapp" onclick="shareOnWhatsApp()" title="Share on WhatsApp">
+                <i class="fab fa-whatsapp"></i>
+              </a>
+            </div>
+          </div>
+        </footer>
       </article>
-    </div>
-    
-    <div class="footer">
-      <p>&copy; 2024 Article Hub. All rights reserved.</p>
-    </div>
+    </main>
   </div>
   
   <!-- Error States -->
-  <div id="error-state" class="error-state" style="display: none;">
-    <div class="container">
-      <h2>Article Not Found</h2>
-      <p>The requested article could not be found. Please check the URL and try again.</p>
-      <div id="debug-info" class="debug-info" style="display: none;"></div>
-      <a href="/" class="btn">Go to Homepage</a>
+  <div id="error-state" class="error-container" style="display: none;">
+    <div class="error-content">
+      <i class="fas fa-exclamation-triangle error-icon"></i>
+      <h2 class="error-title">Article Not Found</h2>
+      <p class="error-description">
+        The article you're looking for could not be found. It may have been moved, deleted, or the URL might be incorrect.
+      </p>
+      <div class="error-actions">
+        <a href="/" class="btn">
+          <i class="fas fa-home"></i>
+          Go Home
+        </a>
+        <button onclick="location.reload()" class="btn btn-secondary">
+          <i class="fas fa-redo"></i>
+          Try Again
+        </button>
+      </div>
     </div>
   </div>
   
-  <div id="permissions-error" class="permissions-error" style="display: none;">
-    <h2>🔒 Database Access Error</h2>
-    <h3>Configuration Required</h3>
-    <p>The article service cannot access the database due to insufficient permissions. This needs to be fixed in your Firebase Console.</p>
-    
-    <p><strong>To fix this issue:</strong></p>
-    <ul>
-      <li>Go to your <a href="https://console.firebase.google.com/" target="_blank" style="color: #d97706;">Firebase Console</a></li>
-      <li>Select your project: <strong>lazada-finds</strong></li>
-      <li>Navigate to <strong>Firestore Database</strong> → <strong>Rules</strong></li>
-      <li>Update your security rules to allow read access to the 'redirects' collection</li>
-    </ul>
+  <div id="permissions-error" class="error-container" style="display: none;">
+    <div class="permissions-error">
+      <h2><i class="fas fa-lock"></i> Database Access Error</h2>
+      <h3>Configuration Required</h3>
+      <p>The article service cannot access the database due to insufficient permissions. This needs to be fixed in your Firebase Console.</p>
+      
+      <p><strong>To fix this issue:</strong></p>
+      <ul>
+        <li>Go to your <a href="https://console.firebase.google.com/" target="_blank" style="color: var(--primary-color);">Firebase Console</a></li>
+        <li>Select your project: <strong>lazada-finds</strong></li>
+        <li>Navigate to <strong>Firestore Database</strong> → <strong>Rules</strong></li>
+        <li>Update your security rules to allow read access to the 'redirects' collection</li>
+      </ul>
 
-    <p><strong>Example rule for public read access:</strong></p>
-    <div style="background: #f3f4f6; padding: 1rem; border-radius: 4px; margin: 1rem 0; font-family: monospace; color: #374151;">
-rules_version = '2';<br>
-service cloud.firestore {<br>
-&nbsp;&nbsp;match /databases/{database}/documents {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;match /redirects/{document} {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;allow read: if true;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;}<br>
-&nbsp;&nbsp;}<br>
+      <p><strong>Example rule for public read access:</strong></p>
+      <div class="code-block">
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /redirects/{document} {
+      allow read: if true;
+    }
+  }
 }
-    </div>
+      </div>
 
-    <div style="margin-top: 2rem;">
-      <a href="/" class="btn">Go to Homepage</a>
-      <button onclick="location.reload()" class="btn btn-secondary" style="margin-left: 1rem;">Retry</button>
+      <div class="error-actions">
+        <a href="/" class="btn">
+          <i class="fas fa-home"></i>
+          Go Home
+        </a>
+        <button onclick="location.reload()" class="btn btn-secondary">
+          <i class="fas fa-redo"></i>
+          Retry
+        </button>
+      </div>
     </div>
   </div>
 
@@ -377,40 +885,75 @@ service cloud.firestore {<br>
       return null;
     }
 
-    // Update meta tags
+    // Update meta tags and structured data
     function updateMetaTags(data) {
-      document.getElementById('page-title').textContent = data.title || 'Article';
-      document.title = data.title || 'Article';
+      const title = data.title || 'Article';
+      const description = data.description || 'Read this amazing article on Article Hub.';
+      const author = data.author || 'Article Hub';
+      const image = data.image || '';
+      const url = window.location.href;
+      const canonical = data.canonical || url;
       
-      if (data.description) {
-        document.getElementById('page-description').setAttribute('content', data.description);
-        document.getElementById('og-description').setAttribute('content', data.description);
-        document.getElementById('twitter-description').setAttribute('content', data.description);
+      // Basic meta tags
+      document.getElementById('page-title').textContent = title;
+      document.title = title;
+      
+      document.getElementById('page-description').setAttribute('content', description);
+      document.getElementById('page-keywords').setAttribute('content', data.keywords || '');
+      document.getElementById('page-author').setAttribute('content', author);
+      
+      // Open Graph tags
+      document.getElementById('og-title').setAttribute('content', title);
+      document.getElementById('og-description').setAttribute('content', description);
+      document.getElementById('og-url').setAttribute('content', url);
+      if (image) {
+        document.getElementById('og-image').setAttribute('content', image);
       }
       
-      if (data.keywords) {
-        document.getElementById('page-keywords').setAttribute('content', data.keywords);
+      // Twitter tags
+      document.getElementById('twitter-title').setAttribute('content', title);
+      document.getElementById('twitter-description').setAttribute('content', description);
+      if (image) {
+        document.getElementById('twitter-image').setAttribute('content', image);
       }
       
-      if (data.author) {
-        document.getElementById('page-author').setAttribute('content', data.author);
+      // Canonical link
+      document.getElementById('canonical-link').setAttribute('href', canonical);
+      
+      // Structured data
+      const structuredData = {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": title,
+        "description": description,
+        "author": {
+          "@type": "Person",
+          "name": author
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Article Hub",
+          "logo": {
+            "@type": "ImageObject",
+            "url": `${window.location.origin}/logo.png`
+          }
+        },
+        "datePublished": data.createdAt ? data.createdAt.toDate().toISOString() : new Date().toISOString(),
+        "dateModified": data.createdAt ? data.createdAt.toDate().toISOString() : new Date().toISOString(),
+        "mainEntityOfPage": {
+          "@type": "WebPage",
+          "@id": url
+        }
+      };
+      
+      if (image) {
+        structuredData.image = {
+          "@type": "ImageObject",
+          "url": image
+        };
       }
       
-      if (data.title) {
-        document.getElementById('og-title').setAttribute('content', data.title);
-        document.getElementById('twitter-title').setAttribute('content', data.title);
-      }
-      
-      if (data.image) {
-        document.getElementById('og-image').setAttribute('content', data.image);
-        document.getElementById('twitter-image').setAttribute('content', data.image);
-      }
-      
-      if (data.canonical) {
-        document.getElementById('canonical-link').setAttribute('href', data.canonical);
-      }
-      
-      document.getElementById('og-url').setAttribute('content', window.location.href);
+      document.getElementById('structured-data').textContent = JSON.stringify(structuredData);
     }
 
     // Show article content
@@ -421,29 +964,58 @@ service cloud.firestore {<br>
       updateMetaTags(data);
       
       // Update article content
-      document.getElementById('article-title').textContent = data.title || 'Untitled Article';
-      document.getElementById('article-description').textContent = data.description || 'No description available.';
-      document.getElementById('article-author').textContent = data.author || 'Anonymous';
-      document.getElementById('article-date').textContent = data.createdAt ? 
+      const title = data.title || 'Untitled Article';
+      const description = data.description || 'No description available.';
+      const author = data.author || 'Anonymous';
+      
+      document.getElementById('article-title-hero').textContent = title;
+      document.getElementById('article-author-hero').textContent = author;
+      document.getElementById('article-date-hero').textContent = data.createdAt ? 
         new Date(data.createdAt.toDate()).toLocaleDateString('en-US', { 
           year: 'numeric', 
           month: 'long', 
           day: 'numeric' 
         }) : 'Recently';
       
+      // Set author avatar
+      document.getElementById('author-avatar').textContent = author.charAt(0).toUpperCase();
+      
       // Handle image
       const imageEl = document.getElementById('article-image');
       if (data.image) {
         imageEl.src = data.image;
-        imageEl.alt = data.title || 'Article image';
+        imageEl.alt = title;
         imageEl.style.display = 'block';
       } else {
         imageEl.style.display = 'none';
       }
       
+      // Update article intro and body
+      document.getElementById('article-intro').textContent = description;
+      
+      // Generate article body preview
+      const bodyText = `
+        ${description}
+        
+        This is a preview of the full article. The complete content contains detailed information, insights, and valuable resources that will help you understand the topic better.
+        
+        Click the "Read Full Article" button below to access the complete content and discover all the valuable information available.
+      `;
+      
+      document.getElementById('article-body').innerHTML = bodyText.split('\n').map(p => p.trim()).filter(p => p).map(p => `<p>${p}</p>`).join('');
+      
       // Update continue reading button
       const continueBtn = document.getElementById('continue-reading-btn');
       continueBtn.href = data.url || '#';
+      
+      // Generate tags
+      if (data.keywords) {
+        const tags = data.keywords.split(',').map(tag => tag.trim()).filter(tag => tag);
+        const tagsContainer = document.getElementById('article-tags');
+        tagsContainer.innerHTML = tags.map(tag => 
+          `<span class="tag">#${tag}</span>`
+        ).join('');
+      }
       
       // Show article content and hide loading
       document.getElementById('loading-state').style.display = 'none';
@@ -460,19 +1032,6 @@ service cloud.firestore {<br>
     function showError(debugInfo = null) {
       document.getElementById('loading-state').style.display = 'none';
       document.getElementById('error-state').style.display = 'block';
-      
-      // Show debug info if available
-      if (debugInfo) {
-        const debugDiv = document.getElementById('debug-info');
-        debugDiv.innerHTML = `
-          <strong>Debug Information:</strong><br>
-          URL: ${debugInfo.fullUrl}<br>
-          Path: ${debugInfo.pathname}<br>
-          Search: ${debugInfo.search}<br>
-          Params: ${JSON.stringify(debugInfo.urlParams)}
-        `;
-        debugDiv.style.display = 'block';
-      }
     }
 
     // Handle continue reading click
@@ -489,8 +1048,36 @@ service cloud.firestore {<br>
         updateClickCount(currentRedirectData.slug);
       }
       
-      // Open in new tab/window
+      // Redirect to the destination URL
       window.open(currentRedirectData.url, '_blank');
+    }
+
+    // Social sharing functions
+    function shareOnTwitter() {
+      if (!currentRedirectData) return;
+      const text = encodeURIComponent(`Check out this article: ${currentRedirectData.title}`);
+      const url = encodeURIComponent(window.location.href);
+      window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank', 'width=600,height=400');
+    }
+
+    function shareOnFacebook() {
+      if (!currentRedirectData) return;
+      const url = encodeURIComponent(window.location.href);
+      window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank', 'width=600,height=400');
+    }
+
+    function shareOnLinkedIn() {
+      if (!currentRedirectData) return;
+      const url = encodeURIComponent(window.location.href);
+      const title = encodeURIComponent(currentRedirectData.title || '');
+      const summary = encodeURIComponent(currentRedirectData.description || '');
+      window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}&title=${title}&summary=${summary}`, '_blank', 'width=600,height=400');
+    }
+
+    function shareOnWhatsApp() {
+      if (!currentRedirectData) return;
+      const text = encodeURIComponent(`${currentRedirectData.title} - ${window.location.href}`);
+      window.open(`https://wa.me/?text=${text}`, '_blank');
     }
 
     // Update click count
@@ -504,7 +1091,6 @@ service cloud.firestore {<br>
         console.log('Click count updated for:', slug);
       } catch (error) {
         console.error('Error updating click count:', error);
-        // Don't show error for click count updates, just log it
       }
     }
 
@@ -515,41 +1101,24 @@ service cloud.firestore {<br>
              error.message.includes('permission-denied');
     }
 
-    // Debug function to show current URL info
-    function debugCurrentUrl() {
-      const debugInfo = {
-        fullUrl: window.location.href,
-        pathname: window.location.pathname,
-        search: window.location.search,
-        hash: window.location.hash,
-        pathSegments: window.location.pathname.split('/').filter(segment => segment),
-        urlParams: Object.fromEntries(new URLSearchParams(window.location.search))
-      };
-      
-      console.log('Debug URL Info:', debugInfo);
-      return debugInfo;
-    }
-
     // Main redirect logic
     async function handleRedirect() {
       console.log('Starting article loader...');
-      const debugInfo = debugCurrentUrl();
       const redirectInfo = getRedirectInfo();
       
       console.log('Redirect info:', redirectInfo);
       
       if (!redirectInfo) {
         console.log('No redirect info found');
-        showError(debugInfo);
+        showError();
         return;
       }
       
       if (redirectInfo.type === 'params') {
         console.log('Handling parameter redirect');
-        // Handle URL parameter redirect
         if (!redirectInfo.url) {
           console.log('No URL in parameters');
-          showError(debugInfo);
+          showError();
           return;
         }
         
@@ -557,13 +1126,12 @@ service cloud.firestore {<br>
         
       } else if (redirectInfo.type === 'slug') {
         console.log('Handling slug redirect for:', redirectInfo.slug);
-        // Handle slug redirect
         try {
           const doc = await db.collection('redirects').doc(redirectInfo.slug).get();
           
           if (!doc.exists) {
             console.log('Document not found for slug:', redirectInfo.slug);
-            showError(debugInfo);
+            showError();
             return;
           }
           
@@ -572,7 +1140,7 @@ service cloud.firestore {<br>
           
           if (!data.url) {
             console.log('No URL in document data');
-            showError(debugInfo);
+            showError();
             return;
           }
           
@@ -583,12 +1151,11 @@ service cloud.firestore {<br>
         } catch (error) {
           console.error('Error fetching redirect:', error);
           
-          // Check if this is a permissions error
           if (isPermissionsError(error)) {
             console.log('Permissions error detected');
             showPermissionsError();
           } else {
-            showError(debugInfo);
+            showError();
           }
         }
       }

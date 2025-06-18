@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title id="page-title">Redirecting...</title>
+  <title id="page-title">Loading...</title>
   <meta name="description" content="" id="page-description">
   <meta name="keywords" content="" id="page-keywords">
   <meta name="author" content="" id="page-author">
@@ -11,7 +11,7 @@
   <meta property="og:description" content="" id="og-description">
   <meta property="og:image" content="" id="og-image">
   <meta property="og:url" content="" id="og-url">
-  <meta property="og:type" content="website">
+  <meta property="og:type" content="article">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="" id="twitter-title">
   <meta name="twitter:description" content="" id="twitter-description">
@@ -28,25 +28,107 @@
     
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
+      line-height: 1.6;
+      color: #333;
+      background: #f8fafc;
     }
     
-    .redirect-container {
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 2rem 0;
       text-align: center;
-      max-width: 600px;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+    
+    .article {
+      background: white;
+      margin: -3rem auto 2rem;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .article-image {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      display: block;
+    }
+    
+    .article-content {
       padding: 2rem;
+    }
+    
+    .article-meta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+      color: #6b7280;
+    }
+    
+    .article-meta .author {
+      font-weight: 600;
+      color: #667eea;
+    }
+    
+    .article-meta .date {
+      color: #9ca3af;
+    }
+    
+    .article-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+    
+    .article-description {
+      font-size: 1.1rem;
+      color: #4b5563;
+      margin-bottom: 2rem;
+      line-height: 1.7;
+    }
+    
+    .continue-reading {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+      margin-bottom: 1rem;
+    }
+    
+    .continue-reading:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+    }
+    
+    .loading-state {
+      text-align: center;
+      padding: 4rem 2rem;
     }
     
     .spinner {
       width: 50px;
       height: 50px;
-      border: 4px solid rgba(255,255,255,0.3);
-      border-top: 4px solid white;
+      border: 4px solid #e5e7eb;
+      border-top: 4px solid #667eea;
       border-radius: 50%;
       animation: spin 1s linear infinite;
       margin: 0 auto 2rem;
@@ -57,84 +139,191 @@
       100% { transform: rotate(360deg); }
     }
     
-    .redirect-info {
-      background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(10px);
-      border-radius: 12px;
-      padding: 2rem;
-      margin-top: 2rem;
+    .error-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: #ef4444;
     }
     
-    .redirect-info h2 {
+    .error-state h2 {
       margin-bottom: 1rem;
-      font-size: 1.5rem;
+      font-size: 2rem;
     }
     
-    .redirect-info p {
-      margin-bottom: 1rem;
-      opacity: 0.9;
-      line-height: 1.6;
-    }
-    
-    .redirect-info img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 8px;
-      margin: 1rem 0;
-    }
-    
-    .manual-redirect {
-      margin-top: 2rem;
+    .error-state p {
+      margin-bottom: 2rem;
+      color: #6b7280;
     }
     
     .btn {
       display: inline-block;
       padding: 12px 24px;
-      background: rgba(255,255,255,0.2);
+      background: #667eea;
       color: white;
       text-decoration: none;
       border-radius: 8px;
       font-weight: 600;
       transition: all 0.3s ease;
-      border: 2px solid rgba(255,255,255,0.3);
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
     }
     
     .btn:hover {
-      background: rgba(255,255,255,0.3);
-      transform: translateY(-2px);
+      background: #5a67d8;
+      transform: translateY(-1px);
     }
     
-    .error-message {
-      background: rgba(239, 68, 68, 0.2);
-      border: 2px solid rgba(239, 68, 68, 0.5);
+    .btn-secondary {
+      background: #6b7280;
+    }
+    
+    .btn-secondary:hover {
+      background: #4b5563;
+    }
+    
+    .permissions-error {
+      background: #fef3cd;
+      border: 1px solid #fde68a;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem;
+      color: #92400e;
+    }
+    
+    .permissions-error h3 {
+      color: #d97706;
+      margin-bottom: 1rem;
+    }
+    
+    .permissions-error ul {
+      margin: 1rem 0;
+      padding-left: 1.5rem;
+    }
+    
+    .permissions-error li {
+      margin-bottom: 0.5rem;
+    }
+    
+    .debug-info {
+      background: #f3f4f6;
       border-radius: 8px;
       padding: 1rem;
       margin-top: 1rem;
+      font-family: monospace;
+      font-size: 0.8rem;
+      color: #374151;
+    }
+    
+    .footer {
+      text-align: center;
+      padding: 2rem;
+      color: #6b7280;
+      font-size: 0.9rem;
+    }
+    
+    @media (max-width: 768px) {
+      .article-title {
+        font-size: 2rem;
+      }
+      
+      .container {
+        padding: 0 1rem;
+      }
+      
+      .article-content {
+        padding: 1.5rem;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="redirect-container">
+  <!-- Loading State -->
+  <div id="loading-state" class="loading-state">
     <div class="spinner"></div>
-    <h1>Redirecting...</h1>
-    <p>Please wait while we redirect you to your destination.</p>
-    
-    <div id="redirect-info" class="redirect-info" style="display: none;">
-      <h2 id="info-title"></h2>
-      <p id="info-description"></p>
-      <img id="info-image" style="display: none;" alt="">
-      <div class="manual-redirect">
-        <p>If you're not redirected automatically, click the button below:</p>
-        <a id="manual-link" href="#" class="btn">Continue to Destination</a>
+    <h2>Loading Article...</h2>
+    <p>Please wait while we prepare your content.</p>
+  </div>
+  
+  <!-- Article Content -->
+  <div id="article-content" style="display: none;">
+    <div class="header">
+      <div class="container">
+        <h1 id="site-title">📚 Article Hub</h1>
+        <p>Discover amazing content and resources</p>
       </div>
     </div>
     
-    <div id="error-message" class="error-message" style="display: none;">
-      <h2>Redirect Not Found</h2>
-      <p>The requested redirect could not be found. Please check the URL and try again.</p>
-      <div class="manual-redirect">
-        <a href="/" class="btn">Go to Homepage</a>
-      </div>
+    <div class="container">
+      <article class="article">
+        <img id="article-image" class="article-image" style="display: none;" alt="">
+        
+        <div class="article-content">
+          <div class="article-meta">
+            <span class="author" id="article-author">Author</span>
+            <span class="date" id="article-date">Today</span>
+          </div>
+          
+          <h1 class="article-title" id="article-title">Article Title</h1>
+          
+          <div class="article-description" id="article-description">
+            Article description will appear here...
+          </div>
+          
+          <a href="#" id="continue-reading-btn" class="continue-reading" onclick="handleContinueReading(event)">
+            Continue Reading →
+          </a>
+          
+          <p style="font-size: 0.9rem; color: #6b7280; margin-top: 1rem;">
+            Click the button above to continue reading the full article on the original source.
+          </p>
+        </div>
+      </article>
+    </div>
+    
+    <div class="footer">
+      <p>&copy; 2024 Article Hub. All rights reserved.</p>
+    </div>
+  </div>
+  
+  <!-- Error States -->
+  <div id="error-state" class="error-state" style="display: none;">
+    <div class="container">
+      <h2>Article Not Found</h2>
+      <p>The requested article could not be found. Please check the URL and try again.</p>
+      <div id="debug-info" class="debug-info" style="display: none;"></div>
+      <a href="/" class="btn">Go to Homepage</a>
+    </div>
+  </div>
+  
+  <div id="permissions-error" class="permissions-error" style="display: none;">
+    <h2>🔒 Database Access Error</h2>
+    <h3>Configuration Required</h3>
+    <p>The article service cannot access the database due to insufficient permissions. This needs to be fixed in your Firebase Console.</p>
+    
+    <p><strong>To fix this issue:</strong></p>
+    <ul>
+      <li>Go to your <a href="https://console.firebase.google.com/" target="_blank" style="color: #d97706;">Firebase Console</a></li>
+      <li>Select your project: <strong>lazada-finds</strong></li>
+      <li>Navigate to <strong>Firestore Database</strong> → <strong>Rules</strong></li>
+      <li>Update your security rules to allow read access to the 'redirects' collection</li>
+    </ul>
+
+    <p><strong>Example rule for public read access:</strong></p>
+    <div style="background: #f3f4f6; padding: 1rem; border-radius: 4px; margin: 1rem 0; font-family: monospace; color: #374151;">
+rules_version = '2';<br>
+service cloud.firestore {<br>
+&nbsp;&nbsp;match /databases/{database}/documents {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;match /redirects/{document} {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;allow read: if true;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;}<br>
+}
+    </div>
+
+    <div style="margin-top: 2rem;">
+      <a href="/" class="btn">Go to Homepage</a>
+      <button onclick="location.reload()" class="btn btn-secondary" style="margin-left: 1rem;">Retry</button>
     </div>
   </div>
 
@@ -152,13 +341,26 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
+    let currentRedirectData = null;
+
     // Get URL parameters or slug
     function getRedirectInfo() {
       const urlParams = new URLSearchParams(window.location.search);
-      const pathSegments = window.location.pathname.split('/').filter(segment => segment);
       
-      // Check if it's a URL parameter redirect (u?title=...)
-      if (urlParams.has('title')) {
+      console.log('URL params:', Object.fromEntries(urlParams));
+      
+      // Check if slug is passed as parameter (from .htaccess rewrite)
+      if (urlParams.has('slug')) {
+        console.log('Found slug parameter:', urlParams.get('slug'));
+        return {
+          type: 'slug',
+          slug: urlParams.get('slug')
+        };
+      }
+      
+      // Check if it's a URL parameter redirect (u?title=... or redirect.html?title=...)
+      if (urlParams.has('title') || urlParams.has('url')) {
+        console.log('Found parameter redirect');
         return {
           type: 'params',
           title: urlParams.get('title') || '',
@@ -171,21 +373,14 @@
         };
       }
       
-      // Check if it's a slug redirect
-      if (pathSegments.length > 0) {
-        return {
-          type: 'slug',
-          slug: pathSegments[0]
-        };
-      }
-      
+      console.log('No redirect info found in URL parameters');
       return null;
     }
 
     // Update meta tags
     function updateMetaTags(data) {
-      document.getElementById('page-title').textContent = data.title || 'Redirecting...';
-      document.title = data.title || 'Redirecting...';
+      document.getElementById('page-title').textContent = data.title || 'Article';
+      document.title = data.title || 'Article';
       
       if (data.description) {
         document.getElementById('page-description').setAttribute('content', data.description);
@@ -218,38 +413,84 @@
       document.getElementById('og-url').setAttribute('content', window.location.href);
     }
 
-    // Show redirect info
-    function showRedirectInfo(data) {
-      const infoDiv = document.getElementById('redirect-info');
-      const titleEl = document.getElementById('info-title');
-      const descEl = document.getElementById('info-description');
-      const imageEl = document.getElementById('info-image');
-      const linkEl = document.getElementById('manual-link');
+    // Show article content
+    function showArticle(data) {
+      currentRedirectData = data;
       
-      titleEl.textContent = data.title || 'Redirecting...';
-      descEl.textContent = data.description || 'You will be redirected shortly.';
+      // Update meta tags
+      updateMetaTags(data);
       
+      // Update article content
+      document.getElementById('article-title').textContent = data.title || 'Untitled Article';
+      document.getElementById('article-description').textContent = data.description || 'No description available.';
+      document.getElementById('article-author').textContent = data.author || 'Anonymous';
+      document.getElementById('article-date').textContent = data.createdAt ? 
+        new Date(data.createdAt.toDate()).toLocaleDateString('en-US', { 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        }) : 'Recently';
+      
+      // Handle image
+      const imageEl = document.getElementById('article-image');
       if (data.image) {
         imageEl.src = data.image;
+        imageEl.alt = data.title || 'Article image';
         imageEl.style.display = 'block';
+      } else {
+        imageEl.style.display = 'none';
       }
       
-      linkEl.href = data.url;
-      infoDiv.style.display = 'block';
+      // Update continue reading button
+      const continueBtn = document.getElementById('continue-reading-btn');
+      continueBtn.href = data.url || '#';
+      
+      // Show article content and hide loading
+      document.getElementById('loading-state').style.display = 'none';
+      document.getElementById('article-content').style.display = 'block';
+    }
+
+    // Show permissions error
+    function showPermissionsError() {
+      document.getElementById('loading-state').style.display = 'none';
+      document.getElementById('permissions-error').style.display = 'block';
     }
 
     // Show error
-    function showError() {
-      document.getElementById('error-message').style.display = 'block';
-      document.querySelector('.spinner').style.display = 'none';
-      document.querySelector('h1').textContent = 'Redirect Not Found';
+    function showError(debugInfo = null) {
+      document.getElementById('loading-state').style.display = 'none';
+      document.getElementById('error-state').style.display = 'block';
+      
+      // Show debug info if available
+      if (debugInfo) {
+        const debugDiv = document.getElementById('debug-info');
+        debugDiv.innerHTML = `
+          <strong>Debug Information:</strong><br>
+          URL: ${debugInfo.fullUrl}<br>
+          Path: ${debugInfo.pathname}<br>
+          Search: ${debugInfo.search}<br>
+          Params: ${JSON.stringify(debugInfo.urlParams)}
+        `;
+        debugDiv.style.display = 'block';
+      }
     }
 
-    // Perform redirect
-    function performRedirect(url, delay = 3000) {
-      setTimeout(() => {
-        window.location.href = url;
-      }, delay);
+    // Handle continue reading click
+    function handleContinueReading(event) {
+      event.preventDefault();
+      
+      if (!currentRedirectData || !currentRedirectData.url) {
+        alert('No destination URL available');
+        return;
+      }
+      
+      // Update click count if it's a slug-based redirect
+      if (currentRedirectData.slug) {
+        updateClickCount(currentRedirectData.slug);
+      }
+      
+      // Open in new tab/window
+      window.open(currentRedirectData.url, '_blank');
     }
 
     // Update click count
@@ -260,56 +501,105 @@
           clicks: firebase.firestore.FieldValue.increment(1),
           lastClicked: firebase.firestore.FieldValue.serverTimestamp()
         });
+        console.log('Click count updated for:', slug);
       } catch (error) {
         console.error('Error updating click count:', error);
+        // Don't show error for click count updates, just log it
       }
+    }
+
+    // Check if error is permissions related
+    function isPermissionsError(error) {
+      return error.code === 'permission-denied' || 
+             error.message.includes('Missing or insufficient permissions') ||
+             error.message.includes('permission-denied');
+    }
+
+    // Debug function to show current URL info
+    function debugCurrentUrl() {
+      const debugInfo = {
+        fullUrl: window.location.href,
+        pathname: window.location.pathname,
+        search: window.location.search,
+        hash: window.location.hash,
+        pathSegments: window.location.pathname.split('/').filter(segment => segment),
+        urlParams: Object.fromEntries(new URLSearchParams(window.location.search))
+      };
+      
+      console.log('Debug URL Info:', debugInfo);
+      return debugInfo;
     }
 
     // Main redirect logic
     async function handleRedirect() {
+      console.log('Starting article loader...');
+      const debugInfo = debugCurrentUrl();
       const redirectInfo = getRedirectInfo();
       
+      console.log('Redirect info:', redirectInfo);
+      
       if (!redirectInfo) {
-        showError();
+        console.log('No redirect info found');
+        showError(debugInfo);
         return;
       }
       
       if (redirectInfo.type === 'params') {
+        console.log('Handling parameter redirect');
         // Handle URL parameter redirect
         if (!redirectInfo.url) {
-          showError();
+          console.log('No URL in parameters');
+          showError(debugInfo);
           return;
         }
         
-        updateMetaTags(redirectInfo);
-        showRedirectInfo(redirectInfo);
-        performRedirect(redirectInfo.url);
+        showArticle(redirectInfo);
         
       } else if (redirectInfo.type === 'slug') {
+        console.log('Handling slug redirect for:', redirectInfo.slug);
         // Handle slug redirect
         try {
           const doc = await db.collection('redirects').doc(redirectInfo.slug).get();
           
           if (!doc.exists) {
-            showError();
+            console.log('Document not found for slug:', redirectInfo.slug);
+            showError(debugInfo);
             return;
           }
           
           const data = doc.data();
-          updateMetaTags(data);
-          showRedirectInfo(data);
-          updateClickCount(redirectInfo.slug);
-          performRedirect(data.url);
+          console.log('Found redirect data:', data);
+          
+          if (!data.url) {
+            console.log('No URL in document data');
+            showError(debugInfo);
+            return;
+          }
+          
+          // Add slug to data for click tracking
+          data.slug = redirectInfo.slug;
+          showArticle(data);
           
         } catch (error) {
           console.error('Error fetching redirect:', error);
-          showError();
+          
+          // Check if this is a permissions error
+          if (isPermissionsError(error)) {
+            console.log('Permissions error detected');
+            showPermissionsError();
+          } else {
+            showError(debugInfo);
+          }
         }
       }
     }
 
-    // Initialize redirect
-    handleRedirect();
+    // Initialize when page loads
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', handleRedirect);
+    } else {
+      handleRedirect();
+    }
   </script>
 </body>
 </html>

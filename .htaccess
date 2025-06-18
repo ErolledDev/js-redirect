@@ -3,13 +3,14 @@ RewriteEngine On
 
 # Redirect /u to redirect.html with query parameters
 RewriteCond %{QUERY_STRING} .
-RewriteRule ^u$ redirect.html [L]
+RewriteRule ^u/?$ redirect.html [L,QSA]
 
-# Redirect slug URLs to redirect.html
+# Redirect slug URLs to redirect.html with slug as parameter
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_URI} !^/(admin\.html|redirect\.html|index\.html)$
-RewriteRule ^([a-z0-9\-]+)/?$ redirect.html [L]
+RewriteCond %{REQUEST_URI} !^/$
+RewriteRule ^([a-z0-9\-]+)/?$ redirect.html?slug=$1 [L,QSA]
 
 # Default document
 DirectoryIndex index.html

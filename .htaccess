@@ -1,34 +1,48 @@
-# URL Rewriting for SEO-friendly redirects
+# Enable URL Rewriting
 RewriteEngine On
 
-# Debug mode - remove these lines in production
+# Debug mode - uncomment these lines for debugging
 # RewriteLog "/tmp/rewrite.log"
 # RewriteLogLevel 3
 
-# Redirect /u to redirect.html with query parameters
+# Force redirect from /u to redirect.html with query parameters
 RewriteCond %{QUERY_STRING} .
-RewriteRule ^u/?$ redirect.html [L,QSA]
+RewriteRule ^u/?$ /redirect.html [L,QSA]
 
 # Handle slug-based redirects - redirect clean URLs to redirect.html with slug parameter
-# This rule should match any lowercase alphanumeric string with hyphens
+# First, exclude existing files and directories
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Exclude specific files and admin pages
+RewriteCond %{REQUEST_URI} !^/(admin\.html|redirect\.html|index\.html)$
+RewriteCond %{REQUEST_URI} !^/$
+
+# Exclude file extensions (static assets)
+RewriteCond %{REQUEST_URI} !^/.*\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|xml|txt|json|pdf|zip|mp4|mp3|webp|avif)$
+
+# Match slug pattern and redirect to redirect.html
+RewriteRule ^([a-z0-9\-]+)/?$ /redirect.html?slug=$1 [L,QSA]
+
+# Alternative fallback rule for any remaining paths
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_URI} !^/(admin\.html|redirect\.html|index\.html)$
 RewriteCond %{REQUEST_URI} !^/$
-RewriteCond %{REQUEST_URI} !^/.*\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$
-RewriteRule ^([a-z0-9\-]+)/?$ redirect.html?slug=$1 [L,QSA]
+RewriteRule ^(.+)$ /redirect.html?slug=$1 [L,QSA]
 
 # Default document
 DirectoryIndex index.html
 
-# Optional: Add some security headers
+# Security headers
 <IfModule mod_headers.c>
     Header always set X-Content-Type-Options nosniff
     Header always set X-Frame-Options DENY
     Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
 </IfModule>
 
-# Optional: Enable compression
+# Enable compression
 <IfModule mod_deflate.c>
     AddOutputFilterByType DEFLATE text/plain
     AddOutputFilterByType DEFLATE text/html
@@ -39,4 +53,19 @@ DirectoryIndex index.html
     AddOutputFilterByType DEFLATE application/rss+xml
     AddOutputFilterByType DEFLATE application/javascript
     AddOutputFilterByType DEFLATE application/x-javascript
+    AddOutputFilterByType DEFLATE application/json
+</IfModule>
+
+# Cache control for static assets
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/jpg "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/gif "access plus 1 month"
+    ExpiresByType image/svg+xml "access plus 1 month"
+    ExpiresByType font/woff "access plus 1 month"
+    ExpiresByType font/woff2 "access plus 1 month"
 </IfModule>
